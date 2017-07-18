@@ -8,7 +8,7 @@
 # Summary:
 # Write a brief summary of what your script does, here.
 
-# Usage notes:
+# Usage Tips:
 # Write any special script or tool usage notes, here.
 
 # Dependencies:
