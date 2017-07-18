@@ -22,18 +22,22 @@ from arcpy.sa import *
 arcpy.CheckOutExtension("Spatial")
 
 import os # Miscellaneous operating system interfaces
+# Provides access to operating system functionality such as file and directory paths.
 # See https://docs.python.org/2/library/os.html
 
 import sys # System-specific parameters and functions
 # See https://docs.python.org/2/library/sys.html
 
 import datetime # Basic date and time types
+# Can be used for time-stamping.
 # See https://docs.python.org/2/library/datetime.html
 
 import time # Time access and conversions
+# Can be used for time-stamping.
 # See https://docs.python.org/2/library/time.html
 
 import traceback # Print or retrieve a stack traceback
+# Used for error handling.
 # See https://docs.python.org/2/library/traceback.html
 
 import Tkinter # Python interface to Tcl/Tk 
