@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------------
-# MyScriptExample.py
+# ScriptHeader.py
 # Version:  ArcGIS 10.3.1 / Python 2.7.8
 # Creation Date: 2017-07-18
 # Last Edit: 2017-07-18
