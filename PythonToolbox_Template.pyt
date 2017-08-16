@@ -23,7 +23,14 @@ class Tool(object):
 
    def getParameterInfo(self):
       """Define parameter definitions"""
-      params = None
+      """See here for more info: http://pro.arcgis.com/en/pro-app/arcpy/classes/parameter.htm"""
+      param1 = arcpy.Parameter(
+         displayName = "Name displayed in toolbox",
+         name = "Simple name for reference",
+         datatype = "See here for valid types: http://pro.arcgis.com/en/pro-app/arcpy/geoprocessing_and_python/defining-parameter-data-types-in-a-python-toolbox.htm",
+         parameterType = "Required/Optional/Derived",
+         direction = "Input/Output")
+      params = [param1]
       return params
 
    def isLicensed(self):
