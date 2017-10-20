@@ -1,33 +1,58 @@
 # Working with coordinate systems
 
 import arcpy, os
-# Define your feature class
-fc1 = r'insert_path_to_dataset_here'
 
-# Get the spatial reference of your feature class
-sr1 = arcpy.Describe(fc1).spatialReference # This yields an object, not a string
-sr1_name = sr1.Name # This yields a string
+def printMsg(msg):
+   arcpy.AddMessage(msg)
+   print msg
 
-# Get the geographic coordinate system of your feature class
-gcs1 = sr1.GCS # This yields an object, not a string
-gcs1_name = gcs1.Name # This yields a string
+def ProjectToMatch (fcTarget, fcTemplate):
+   """Project a target feature class to match the coordinate system of a template feature class"""
+   # Get the spatial reference of your target and template feature classes
+   srTarget = arcpy.Describe(fcTarget).spatialReference # This yields an object, not a string
+   srTemplate = arcpy.Describe(fcTemplate).spatialReference 
 
-# Assuming you have already defined a second feature class, fc2, and its spatial reference and coordinate system, similar to above for fc1, you can compare coordinate systems and decide what to do from there. 
+   # Get the geographic coordinate system of your target and template feature classes
+   gcsTarget = srTarget.GCS # This yields an object, not a string
+   gcsTemplate = srTemplate.GCS
 
-# Let's say you want fc1 to be projected to the same coordinate system as fc2.
-if sr1_name == sr2_name:
-   arcpy.AddMessage('Coordinate systems match; no need to do anything.')
-else:
-   arcpy.AddMessage('Coordinate systems do not match; proceeding with re-projection.')
-   fc1_prj = r'insert_output_path_here'
-   if gs1_name == gcs2_name:
-      arcpy.AddMessage('Datums are the same; no geographic transformation needed.')
-      arcpy.Project_management (fc1, fc1_prj, sr2)
+   # Compare coordinate systems and decide what to do from there. 
+   if srTarget.Name == srTemplate.Name:
+      printMsg('Coordinate systems match; no need to do anything.')
+      return fcTarget
    else:
-      arcpy.AddMessage('Datums do not match; re-projecting with geographic transformation')
-      # Get the list of applicable geographic transformations
-      transList = arcpy.ListTransformations(sr1,sr2) # This is a stupid long list
-      # Extract the first item in the list which I hope is the right transformation to use
-      geoTrans = transList[0]
-      # Now perform reprojection with geographic transformation
-      arcpy.Project_management (fc1, fc1_prj, sr2, geoTrans)
+      printMsg('Coordinate systems do not match; proceeding with re-projection.')
+      if fcTarget[-3:] == 'shp':
+         fcTarget_prj = fcTarget[:-4] + "_prj.shp"
+      else:
+         fcTarget_prj = fcTarget + "_prj"
+      if gcsTarget.Name == gcsTemplate.Name:
+         printMsg('Datums are the same; no geographic transformation needed.')
+         arcpy.Project_management (fcTarget, fcTarget_prj, srTemplate)
+      else:
+         printMsg('Datums do not match; re-projecting with geographic transformation')
+         # Get the list of applicable geographic transformations
+         # This is a stupid long list
+         transList = arcpy.ListTransformations(srTarget,srTemplate) 
+         # Extract the first item in the list, assumed the appropriate one to use
+         geoTrans = transList[0]
+         # Now perform reprojection with geographic transformation
+         arcpy.Project_management (fcTarget, fcTarget_prj, srTemplate, geoTrans)
+      printMsg("Re-projected data is %s." % fcTarget_prj)
+      return fcTarget_prj
+      
+# Use the section below to enable a function (or set of functions) to be run directly from this free-standing script (i.e., not as an ArcGIS toolbox tool)
+def main():
+   # Set up your variables here
+   #fcTarget = r'C:\Testing\RCL_Test.gdb\BoatRamps_conus'
+   #fcTarget = r'C:\Testing\RCL_Test.gdb\BoatRamps'
+   fcTarget = r'C:\Testing\BoatRamps_conus.shp'
+   fcTemplate = r'C:\Testing\RCL_Test.gdb\RCL2017Q3_Subset'
+   
+   # Include the desired function run statement(s) below
+   ProjectToMatch (fcTarget, fcTemplate)
+   
+   # End of user input
+   
+if __name__ == '__main__':
+   main()
